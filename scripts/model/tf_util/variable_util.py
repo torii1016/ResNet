@@ -6,17 +6,17 @@ import numpy as np
 import tensorflow as tf
 
 def get_rand_variable(name, shape, stddev, trainable = True):
-    return tf.get_variable('weights{}'.format(name), shape,
+    return tf.compat.v1.get_variable('weights{}'.format(name), shape,
                            initializer = tf.random_normal_initializer(stddev = stddev),
                            trainable = trainable)
 
 def get_const_weight_variable(name, shape, value, trainable = True):
-    return tf.get_variable('weights{}'.format(name), shape,
+    return tf.compat.v1.get_variable('weights{}'.format(name), shape,
                            initializer = tf.constant_initializer(value),
                            trainable = trainable)
 
 def get_const_variable(name, shape, value, trainable = True):
-    return tf.get_variable('biases{}'.format(name), shape,
+    return tf.compat.v1.get_variable('biases{}'.format(name), shape,
                            initializer = tf.constant_initializer(value),
                            trainable = trainable)
 
@@ -28,3 +28,6 @@ def get_dim(target):
 
 def flatten(inputs):
     return tf.reshape(inputs, [-1, get_dim(inputs)])
+
+def get_channel(target):
+    return tf.shape(target)[-1]

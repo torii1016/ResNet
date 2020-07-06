@@ -29,9 +29,9 @@ def batch_norm(name, x, decay_rate = 0.99, is_training = True):
                                [1, dim], 1.0)
 
     if is_training:
-        avg_mean_assign_op = tf.assign(avg_mean, decay_rate * avg_mean
+        avg_mean_assign_op = tf.compat.v1.assign(avg_mean, decay_rate * avg_mean
                                        + (1 - decay_rate) * mean)
-        avg_var_assign_op = tf.assign(avg_var,
+        avg_var_assign_op = tf.compat.v1.assign(avg_var,
                                       decay_rate * avg_var
                                       + (1 - decay_rate) * var)
 

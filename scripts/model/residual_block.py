@@ -5,11 +5,11 @@ import sys
 import numpy as np
 import tensorflow as tf
 
-from .tf_util import Layers, lrelu, linear, conv, batch_norm, get_dim
+from .tf_util import Layers, lrelu, linear, conv, batch_norm, get_dim, get_channel
 
 class ResidualBlock(Layers):
     def __init__(self, name_scopes, layer_channels, filter_size, output_dim):
-        assert(len(name_scopes) == 1)
+        #assert(len(name_scopes) == 1)
         super().__init__(name_scopes)
         self.name_scope = name_scopes
         self.layer_channels = layer_channels
@@ -20,8 +20,8 @@ class ResidualBlock(Layers):
 
         h  = inputs
         # convolution
-        with tf.variable_scope(self.name_scope, reuse = reuse):
-            for i, (in_chan, out_chan) in enumerate(zip(self.layer_channels, self.layer_channels[1:])):
+        with tf.compat.v1.variable_scope(self.name_scope, reuse = reuse):
+            for i, out_chan in enumerate(self.layer_channels):
                 conved = conv(inputs = h,
                     out_num = out_chan,
                     filter_width = self.filter_size[i], filter_height = self.filter_size[i],
