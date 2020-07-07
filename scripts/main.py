@@ -4,12 +4,13 @@ import numpy as np
 from scipy.io import loadmat
 import cv2
 from tqdm import tqdm
+from collections import OrderedDict
 
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 
 from data_reading import CiferData
-from model.resnet import ResNet
+from model.resnet import ResNet50, ResNet18
 from model.convolutional_neural_network import ConvolutionalNeuralNetwork
 
 #from show_data import ShowData
@@ -75,7 +76,8 @@ def main():
     test_data = test_images
     test_label = test_labels
 
-    resnet = ResNet(32, 10)
+    resnet = ResNet50(32, 10)
+    #resnet = ResNet18(32, 10) #accuracy:74.59
     #resnet = ConvolutionalNeuralNetwork(32, 10)
     resnet.set_model(0.001)
 
@@ -84,30 +86,31 @@ def main():
     init = tf.compat.v1.global_variables_initializer()
     sess.run(init)
 
-    epoch = 1000
-    batch_size = 50
+    epoch = 5000
+    batch_size = 200
 
     # Pre-training
     accuracy_list = []
     loss_list = []
-    for i in tqdm(range(epoch)):
-        choice_id = np.random.choice(train_data.shape[0], batch_size, replace=False)
-        batch_data = train_data[choice_id]
-        batch_label = train_label[choice_id]
+    with tqdm(range(epoch)) as pbar:
+        for i, ch in enumerate(pbar):
+            choice_id = np.random.choice(train_data.shape[0], batch_size, replace=False)
+            batch_data = train_data[choice_id]
+            batch_label = train_label[choice_id]
 
-        """
-        if i % 10 == 0:
-            accuracy = 0
-            for j in range(0, test_data.shape[0], 100):
-                data = test_data[j:j+100]
-                label = test_label[j:j+100]
-                accuracy += int(resnet.test(sess, data, label)[0]*data.shape[0])
-            print("step {}, training accuracy {}".format(i, accuracy/test_data.shape[0]*100.0))
-        """
+            """
+            if i % 10 == 0:
+                accuracy = 0
+                for j in range(0, test_data.shape[0], 100):
+                    data = test_data[j:j+100]
+                    label = test_label[j:j+100]
+                    accuracy += int(resnet.test(sess, data, label)[0]*data.shape[0])
+                print("step {}, training accuracy {}".format(i, accuracy/test_data.shape[0]*100.0))
+            """
 
-        _, loss = resnet.train(sess, batch_data, batch_label)
-        loss_list.append(loss)
-        print("loss: {}".format(loss))
+            _, loss = resnet.train(sess, batch_data, batch_label)
+            loss_list.append(loss)
+            pbar.set_postfix(OrderedDict(loss=loss))
 
     accuracy = 0
     for j in range(0, test_data.shape[0], 100):

@@ -16,7 +16,7 @@ class ResidualBlock(Layers):
         self.output_dim = output_dim
         self.filter_size = filter_size
 
-    def set_model(self, inputs, is_training = True, reuse = False):
+    def set_model(self, inputs, input_shortcut, is_training = True, reuse = False):
 
         h  = inputs
         # convolution
@@ -30,10 +30,14 @@ class ResidualBlock(Layers):
                 bn_conved = batch_norm(i, conved, is_training)
                 h = tf.nn.relu(bn_conved)
 
+        h = tf.nn.relu(tf.add(bn_conved, input_shortcut))
+        return h
+    
+    def shortcut(self, inputs, out_num, reuse):
+        with tf.compat.v1.variable_scope(self.name_scope, reuse = reuse):
             shortcut_input = conv(inputs = inputs,
-                out_num = self.layer_channels[-1],
+                out_num = out_num,
                 filter_width = 1, filter_height = 1,
                 stride = 1, name="shortcut")
-
-        h = tf.nn.relu(tf.add(bn_conved, shortcut_input))
-        return h
+        
+        return shortcut_input
