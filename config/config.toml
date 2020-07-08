@@ -1,0 +1,13 @@
+# -*- coding:utf-8 -*-
+
+episode = 5000
+batch_size = 200
+
+[Dataset]
+name = "CIFAR10" # SVHN or CIFAR10
+
+[Network]
+name = "ResNet18" # ResNet50 or ResNet18
+class = 10
+fig_size = 32
+lr = 0.001
