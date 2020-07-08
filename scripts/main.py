@@ -31,8 +31,6 @@ def color_resize(dataset):
 
 def main(config_dict):
 
-    
-
     print("--- Loading dataset [{}] ---".format(config_dict["Dataset"]["name"])) # --------
     if config_dict["Dataset"]["name"] == "SVHN":
         svhn = SVHNData("Dataset/SVHN/train_32x32.mat", "Dataset/SVHN/test_32x32.mat")
